@@ -15,11 +15,9 @@ public class BoardImpl extends AbstractBoard {
         if (n < 1 || m < 1) throw new IllegalArgumentException();
         this.next = new boolean[n][m];
         this.current = new boolean[n][m];
-        IntStream.range(0, n).forEach(
-                x -> IntStream.range(0, m).forEach(
-                        y -> this.current[x][y] = random.nextBoolean()
-                )
-        );
+        IntStream.range(0, n).forEach(x -> IntStream.range(0, m).forEach(
+                y -> this.current[x][y] = random.nextBoolean()
+        ));
     }
 
     @Override
@@ -37,9 +35,6 @@ public class BoardImpl extends AbstractBoard {
         return !(x < 0 || y < 0 || x >= getMaxX() || y >= getMaxY()) && current[y][x];
     }
 
-    private String getStringValue(int x, int y) {
-        return getValue(x, y) ? " " : "*";
-    }
 
     @Override
     public void setNewValue(int x, int y, boolean value) {
@@ -48,9 +43,9 @@ public class BoardImpl extends AbstractBoard {
 
     @Override
     public void commitNewValues() {
-        System.out.println(IntStream.rangeClosed(0, current.length).mapToObj(i -> "-").reduce("", String::concat).concat(this.toString()));
+        System.out.println(IntStream.rangeClosed(0, current.length).parallel().mapToObj(i -> "-").reduce("", String::concat).concat(this.toString()));
         boolean changed = !Arrays.deepEquals(current, next);
-        IntStream.range(0, current.length).forEach(i -> current[i] = Arrays.copyOf(next[i], next[i].length));
+        IntStream.range(0, current.length).parallel().forEach(i -> current[i] = Arrays.copyOf(next[i], next[i].length));
         if (!changed) converged.countDown();
     }
 
@@ -66,12 +61,9 @@ public class BoardImpl extends AbstractBoard {
 
     @Override
     public String toString() {
-        return "\n" + IntStream.range(0, getMaxY()).mapToObj(
-                y -> "|".concat(
-                        IntStream.range(0, getMaxX()).mapToObj(
-                                x -> getStringValue(x, y)
-                        ).reduce("", String::concat)
-                ).concat("|\n")
-        ).reduce("", String::concat).concat("\n");
+        return "\n".concat(IntStream.range(0, getMaxY()).parallel().mapToObj(
+                y -> "|".concat(IntStream.range(0, getMaxX()).mapToObj(
+                        x -> getValue(x, y) ? "   " : " * ").reduce("", String::concat)).concat("|\n")
+        ).reduce("", String::concat).concat("\n"));
     }
 }

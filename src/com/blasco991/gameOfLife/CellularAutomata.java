@@ -69,7 +69,7 @@ public abstract class CellularAutomata {
 
         boolean hasConverged();
 
-        void waitForConvergence() throws InterruptedException; // blocking
+        void waitForConvergence() throws InterruptedException;
 
         Board getSubBoard(int numPartitions, int index);
     }

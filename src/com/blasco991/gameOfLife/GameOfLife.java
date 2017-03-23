@@ -13,7 +13,7 @@ public class GameOfLife extends CellularAutomata {
         boolean alive = board.getValue(x, y);
 
         long neighbors = IntStream.rangeClosed(-1, 1)
-                .mapToLong(dx -> IntStream.rangeClosed(-1, 1)
+                .mapToLong(dx -> IntStream.rangeClosed(-1, 1).parallel()
                         .filter(dy -> (dx != 0 || dy != 0) && (board.getValue(x + dx, y + dy)))
                         .count()
                 ).sum();
