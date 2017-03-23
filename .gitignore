@@ -1,3 +1,9 @@
-.idea
+.idea/
 out/
 JavaConcurrency.iml
+.DS_Store
+src/.DS_Store
+src/com/.DS_Store
+src/com/blasco991/.DS_Store
+src/com/blasco991/gameoflife/.DS_Store
+src/com/com.iml
