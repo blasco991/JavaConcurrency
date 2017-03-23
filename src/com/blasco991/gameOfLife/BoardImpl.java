@@ -15,7 +15,7 @@ public class BoardImpl extends AbstractBoard {
         if (n < 1 || m < 1) throw new IllegalArgumentException();
         this.next = new boolean[n][m];
         this.current = new boolean[n][m];
-        IntStream.range(0, n).forEach(x -> IntStream.range(0, m).forEach(
+        IntStream.range(0, n).forEach(x -> IntStream.range(0, m).parallel().forEach(
                 y -> this.current[x][y] = random.nextBoolean()
         ));
     }
