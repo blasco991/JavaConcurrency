@@ -19,14 +19,8 @@ public class GameOfLife extends CellularAutomata {
                 ).sum();
 
         if (alive)
-            if (neighbors < 2 || neighbors > 3)
-                return false;
-            else
-                return true;
-        else if (neighbors == 3)
-            return true;
-        else
-            return false;
+            return !(neighbors < 2 || neighbors > 3);
+        else return neighbors == 3;
     }
 
     public static void main(String[] args) throws InterruptedException {
