@@ -1,5 +1,4 @@
-package gameoflife;
-
+package com.blasco991.gameOfLife;
 
 import java.util.stream.IntStream;
 
