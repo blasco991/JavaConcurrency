@@ -1,7 +1,5 @@
 package com.blasco991.gameOfLife;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
