@@ -1,5 +1,4 @@
-package gameoflife;
-
+package com.blasco991.gameOfLife;
 
 public abstract class AbstractBoard implements CellularAutomata.Board {
 

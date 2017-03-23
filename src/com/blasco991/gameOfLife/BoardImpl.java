@@ -1,4 +1,4 @@
-package gameoflife;
+package com.blasco991.gameOfLife;
 
 import java.util.Arrays;
 import java.util.Random;

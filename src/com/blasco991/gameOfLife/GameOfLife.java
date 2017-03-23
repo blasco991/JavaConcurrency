@@ -9,7 +9,7 @@ public class GameOfLife extends CellularAutomata {
     }
 
     @Override
-    protected int computeValue(Board board, int x, int y) {
+    protected int computeValue(CellularAutomata.Board board, int x, int y) {
         boolean alive = board.getValue(x, y);
 
         long neighbors = IntStream.rangeClosed(-1, 1)

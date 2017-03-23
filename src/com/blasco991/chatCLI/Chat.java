@@ -1,4 +1,4 @@
-package com.blasco991.Java.ChatCLI;
+package com.blasco991.chatCLI;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
