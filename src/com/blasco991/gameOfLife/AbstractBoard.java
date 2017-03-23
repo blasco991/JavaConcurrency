@@ -28,7 +28,7 @@ public abstract class AbstractBoard implements CellularAutomata.Board {
             }
 
             @Override
-            public void setNewValue(int x, int y, int value) {
+            public void setNewValue(int x, int y, boolean value) {
                 AbstractBoard.this.setNewValue(x, initialY + y, value);
             }
 

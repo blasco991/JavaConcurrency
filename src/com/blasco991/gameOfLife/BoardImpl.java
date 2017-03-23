@@ -1,26 +1,27 @@
 package com.blasco991.gameOfLife;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
 
 public class BoardImpl extends AbstractBoard {
-    private final int[][] current;
-    private final int[][] next;
+    private final boolean[][] current;
+    private final boolean[][] next;
     private final CountDownLatch converged = new CountDownLatch(1);
     private final Random random = new Random();
 
     BoardImpl(int n, int m) {
         if (n < 1 || m < 1) throw new IllegalArgumentException();
-        this.current = new int[n][m];
-        this.next = new int[n][m];
+        this.next = new boolean[n][m];
+        this.current = new boolean[n][m];
         IntStream.range(0, n).forEach(
-                i -> current[i] = random.ints(current[i].length, 0, 2).toArray()
+                x -> IntStream.range(0, m).forEach(
+                        y -> this.current[x][y] = random.nextBoolean()
+                )
         );
-        /*this.next = IntStream.range(0, n).mapToObj(
-                x -> random.ints(m, 0, 1).toArray()
-        ).toArray(int[][]::new);*/
     }
 
     @Override
@@ -35,10 +36,7 @@ public class BoardImpl extends AbstractBoard {
 
     @Override
     public boolean getValue(int x, int y) {
-        if (x < 0 || y < 0 || x >= getMaxX() || y >= getMaxY())
-            return false;
-        else
-            return current[y][x] != 0;
+        return !(x < 0 || y < 0 || x >= getMaxX() || y >= getMaxY()) && current[y][x];
     }
 
     private String getStringValue(int x, int y) {
@@ -46,7 +44,7 @@ public class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public void setNewValue(int x, int y, int value) {
+    public void setNewValue(int x, int y, boolean value) {
         next[y][x] = value;
     }
 

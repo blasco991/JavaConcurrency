@@ -9,7 +9,7 @@ public class GameOfLife extends CellularAutomata {
     }
 
     @Override
-    protected int computeValue(CellularAutomata.Board board, int x, int y) {
+    protected boolean computeValue(CellularAutomata.Board board, int x, int y) {
         boolean alive = board.getValue(x, y);
 
         long neighbors = IntStream.rangeClosed(-1, 1)
@@ -20,13 +20,13 @@ public class GameOfLife extends CellularAutomata {
 
         if (alive)
             if (neighbors < 2 || neighbors > 3)
-                return 0;
+                return false;
             else
-                return 1;
+                return true;
         else if (neighbors == 3)
-            return 1;
+            return true;
         else
-            return 0;
+            return false;
     }
 
     public static void main(String[] args) throws InterruptedException {

@@ -27,7 +27,7 @@ public abstract class CellularAutomata {
         ).toArray(Worker[]::new);
     }
 
-    protected abstract int computeValue(Board board, int x, int y);
+    protected abstract boolean computeValue(Board board, int x, int y);
 
     private class Worker implements Runnable {
         private final Board board;
@@ -63,7 +63,7 @@ public abstract class CellularAutomata {
 
         boolean getValue(int x, int y);
 
-        void setNewValue(int x, int y, int value);
+        void setNewValue(int x, int y, boolean value);
 
         void commitNewValues();
 
