@@ -1,7 +1,6 @@
 package com.blasco991.gameOfLife;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
