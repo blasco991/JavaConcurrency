@@ -3,20 +3,20 @@ package com.blasco991.gameOfLife;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 public class BoardImpl extends AbstractBoard {
     private final boolean[][] current;
     private final boolean[][] next;
     private final CountDownLatch converged = new CountDownLatch(1);
-    private final Random random = new Random();
 
     BoardImpl(int n, int m) {
         if (n < 1 || m < 1) throw new IllegalArgumentException();
         this.next = new boolean[n][m];
         this.current = new boolean[n][m];
-        IntStream.range(0, n).forEach(x -> IntStream.range(0, m).parallel().forEach(
-                y -> this.current[x][y] = random.nextBoolean()
+        IntStream.range(0, n).parallel().forEach(x -> IntStream.range(0, m).forEach(
+                y -> this.current[x][y] = ThreadLocalRandom.current().nextBoolean()
         ));
     }
 
