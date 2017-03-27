@@ -5,6 +5,7 @@ import java.util.Formatter;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -12,11 +13,11 @@ import java.util.stream.IntStream;
 
 public class Matrix {
 
-    final static int K = 100;
+    final static int K = 10;
     private final static int M = 1000;
 
     final double[][] elements;
-    private final static Random random = new Random();
+    private final static Random random = ThreadLocalRandom.current();
 
     Matrix(double[][] elements) {
         this.elements = elements;
@@ -27,9 +28,10 @@ public class Matrix {
             throw new IllegalArgumentException("dimensions should be positive");
 
         this.elements = new double[m][n];
-        for (int x = 0; x < n; x++)
-            for (int y = 0; y < m; y++)
-                elements[y][x] = random.nextDouble() * 100.0 - 50.0;
+        IntStream.range(0, m).parallel().forEach(
+                i -> Arrays.parallelSetAll(this.elements[i], j -> ThreadLocalRandom.current().nextDouble() * 100.0 - 50.0)
+        );
+
     }
 
     private Matrix(Matrix left, Matrix right) {
@@ -97,7 +99,7 @@ public class Matrix {
     Matrix parallelMultiply(Matrix right) {
         double[][] result = new double[getM()][right.getN()];
         int k = Runtime.getRuntime().availableProcessors() + 1;
-        ExecutorService executor = Executors.newFixedThreadPool(k);
+        ExecutorService executor = Executors.newCachedThreadPool();
         IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, right, result)));
         executor.shutdown();
         try {
