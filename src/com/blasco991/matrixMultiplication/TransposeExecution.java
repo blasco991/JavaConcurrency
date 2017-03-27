@@ -1,4 +1,4 @@
-package com.blasco991.Java.MatrixMultiplication;
+package com.blasco991.matrixMultiplication;
 
 /**
  * Created by blasco991 on 14/03/17.

@@ -1,4 +1,4 @@
-package com.blasco991.Java.MatrixMultiplication;
+package com.blasco991.matrixMultiplication;
 
 import java.util.Formatter;
 
