@@ -172,15 +172,13 @@ public class Matrix {
 
     static UnaryOperator<double[][]> transposeParallel() {
         return (double[][] col) -> IntStream.range(0, col[0].length).parallel().mapToObj(
-                (int row) -> IntStream.range(0, col.length).parallel().mapToDouble(
-                        (int c) -> col[c][row])
+                (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
                         .toArray()).toArray(double[][]::new);
     }
 
     static UnaryOperator<double[][]> transpose() {
         return (double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
-                (int row) -> IntStream.range(0, col.length).mapToDouble(
-                        (int c) -> col[c][row])
+                (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
                         .toArray()).toArray(double[][]::new);
     }
 
