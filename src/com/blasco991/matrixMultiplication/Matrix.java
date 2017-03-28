@@ -11,12 +11,12 @@ public class Matrix {
     final static int K = 100;
     private final static int M = 100;
 
-    final Double[][] elements;
+    final double[][] elements;
     private final static Random random = new Random();
     private final static int k = Runtime.getRuntime().availableProcessors();
     private final static ExecutorService executor = Executors.newFixedThreadPool(k);
 
-    Matrix(Double[][] elements) {
+    Matrix(double[][] elements) {
         this.elements = elements;
     }
 
@@ -25,9 +25,8 @@ public class Matrix {
             throw new IllegalArgumentException("dimensions should be positive");
 
         this.elements = IntStream.range(0, m).mapToObj(
-                i -> IntStream.range(0, n).mapToObj(
-                        j -> ThreadLocalRandom.current().nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
-        ).toArray(Double[][]::new);
+                i -> ThreadLocalRandom.current().doubles().limit(n).toArray()
+        ).toArray(double[][]::new);
     }
 
     private Matrix(Matrix left, Matrix right) {
@@ -38,7 +37,7 @@ public class Matrix {
 
         int n = right.getN();
 
-        this.elements = new Double[m][n];
+        this.elements = new double[m][n];
         for (int x = 0; x < n; x++)
             for (int y = 0; y < m; y++) {
                 double sum = 0.0;
@@ -93,7 +92,7 @@ public class Matrix {
     }
 
     Matrix parallelMultiply(Matrix right) {
-        Double[][] result = Matrix.constructMatrix(getM(), right.getN());
+        double[][] result = Matrix.constructMatrix(getM(), right.getN());
         List<Future> futures = new ArrayList<>();
         for (int i = 0; i <= k; i++) {
             Future<?> submit = executor.submit(new Worker(i, right, result));
@@ -124,7 +123,7 @@ public class Matrix {
     }
 
     Matrix parallelStreamMultiply(Matrix right) {
-        final Double[][] result = constructMatrix(getM(), right.getN());
+        final double[][] result = constructMatrix(getM(), right.getN());
         IntStream.range(0, right.getN()).forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
                         (int i) -> IntStream.range(0, getN()).forEach(
@@ -167,25 +166,25 @@ public class Matrix {
         return equals == 1;
     }
 
-    static UnaryOperator<Double[][]> transposeParallel() {
-        return (Double[][] col) -> IntStream.range(0, col[0].length).parallel().mapToObj(
+    static UnaryOperator<double[][]> transposeParallel() {
+        return (double[][] col) -> IntStream.range(0, col[0].length).parallel().mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
-                        .toArray()).toArray(Double[][]::new);
+                        .toArray()).toArray(double[][]::new);
     }
 
-    static UnaryOperator<Double[][]> transpose() {
-        return (Double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
+    static UnaryOperator<double[][]> transpose() {
+        return (double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
-                        .toArray()).toArray(Double[][]::new);
+                        .toArray()).toArray(double[][]::new);
     }
 
     private class Worker implements Runnable {
 
         private final int id;
         private final Matrix right;
-        private final Double[][] result;
+        private final double[][] result;
 
-        Worker(int id, Matrix right, Double[][] result) {
+        Worker(int id, Matrix right, double[][] result) {
             this.result = result;
             this.right = right;
             this.id = id;
@@ -200,9 +199,9 @@ public class Matrix {
         }
     }
 
-    private static Double[][] constructMatrix(int m, int n) {
-        Double[][] result = new Double[m][n];
-        for (Double[] row : result)
+    private static double[][] constructMatrix(int m, int n) {
+        double[][] result = new double[m][n];
+        for (double[] row : result)
             Arrays.fill(row, 0d);
         return result;
     }
