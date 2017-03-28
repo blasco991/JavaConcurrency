@@ -13,7 +13,8 @@ public class Matrix {
 
     final Double[][] elements;
     private final static Random random = new Random();
-    private final static ExecutorService executor = Executors.newCachedThreadPool();
+    private final static int k = Runtime.getRuntime().availableProcessors();
+    private final static ExecutorService executor = Executors.newFixedThreadPool(k);
 
     Matrix(Double[][] elements) {
         this.elements = elements;
@@ -93,10 +94,9 @@ public class Matrix {
 
     Matrix parallelMultiply(Matrix right) {
         Double[][] result = Matrix.constructMatrix(getM(), right.getN());
-        int k = Runtime.getRuntime().availableProcessors();
         List<Future> futures = new ArrayList<>();
         for (int i = 0; i <= k; i++) {
-            Future<?> submit = executor.submit(new Worker(i, k, right, result));
+            Future<?> submit = executor.submit(new Worker(i, right, result));
             futures.add(submit);
         }
         for (Future future : futures) {
@@ -184,10 +184,8 @@ public class Matrix {
         private final int id;
         private final Matrix right;
         private final Double[][] result;
-        private final int k;
 
-        Worker(int id, int k, Matrix right, Double[][] result) {
-            this.k = k;
+        Worker(int id, Matrix right, Double[][] result) {
             this.result = result;
             this.right = right;
             this.id = id;
