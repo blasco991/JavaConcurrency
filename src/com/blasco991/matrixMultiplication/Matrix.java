@@ -26,7 +26,7 @@ public class Matrix {
         this.elements = new double[m][n];
         for (int x = 0; x < n; x++)
             for (int y = 0; y < m; y++)
-                elements[y][x] = random.nextDouble() * 100.0 - 50.0;
+                elements[y][x] = ThreadLocalRandom.current().nextDouble() * 100.0 - 50.0;
     }
 
     private Matrix(Matrix left, Matrix right) {
