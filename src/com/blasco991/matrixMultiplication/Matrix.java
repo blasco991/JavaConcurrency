@@ -11,7 +11,7 @@ import java.util.function.UnaryOperator;
 
 public class Matrix {
 
-    final static int K = 10;
+    final static int K = 100;
     private final static int M = 100;
 
     final Double[][] elements;
@@ -210,7 +210,7 @@ public class Matrix {
         return result;
     }
 
-    protected static void shutdown(){
+    static void shutdown(){
         executor.shutdown();
     }
 }
