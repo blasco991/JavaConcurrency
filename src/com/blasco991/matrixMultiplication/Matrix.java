@@ -28,10 +28,6 @@ public class Matrix {
         if (m <= 0 || n <= 0)
             throw new IllegalArgumentException("dimensions should be positive");
 
-//        this.elements = new double[m][n];
-//        IntStream.range(0, m).parallel().mapToObj(
-//                i -> Arrays.parallelSetAll(this.elements[i], j -> random.nextDouble() * 100.0 - 50.0)
-//        );
         this.elements = IntStream.range(0, m).parallel().mapToObj(
                 i -> IntStream.range(0, n).mapToObj(
                         j -> random.nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
@@ -103,6 +99,7 @@ public class Matrix {
 
     Matrix parallelMultiply(Matrix right) {
         Double[][] result = new Double[getM()][right.getN()];
+        Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
         int k = Runtime.getRuntime().availableProcessors() + 1;
         IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, k, right, result)));
         executor.shutdown();
@@ -129,9 +126,8 @@ public class Matrix {
     }
 
     Matrix parallelStreamMultiply(Matrix right) {
-
-        Double[][] result = new Double[getM()][right.getN()];
-
+        final Double[][] result = new Double[getM()][right.getN()];
+        Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
         IntStream.range(0, right.getN()).forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
                         (int i) -> IntStream.range(0, getN()).forEach(
@@ -208,7 +204,6 @@ public class Matrix {
                                     j -> result[i][q] += elements[i][j] * right.elements[j][q]
                             )));
         }
-
     }
 
 }
