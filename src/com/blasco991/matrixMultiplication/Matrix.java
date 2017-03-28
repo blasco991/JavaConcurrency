@@ -23,7 +23,7 @@ public class Matrix {
         if (m <= 0 || n <= 0)
             throw new IllegalArgumentException("dimensions should be positive");
 
-        this.elements = IntStream.range(0, m).parallel().mapToObj(
+        this.elements = IntStream.range(0, m).mapToObj(
                 i -> IntStream.range(0, n).mapToObj(
                         j -> ThreadLocalRandom.current().nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
         ).toArray(Double[][]::new);
