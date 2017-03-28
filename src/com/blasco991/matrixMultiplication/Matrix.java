@@ -195,20 +195,10 @@ public class Matrix {
 
         @Override
         public void run() {
-            int bound = right.getN();
-            for (int idx = 0; idx < bound; idx++) {
-                int q = idx;
-                if (q % k == id) {
-                    int bound1 = getM();
-                    for (int i1 = 0; i1 < bound1; i1++) {
-                        int i = i1;
-                        int bound2 = getN();
-                        for (int j = 0; j < bound2; j++) {
-                            result[i][q] += elements[i][j] * right.elements[j][q];
-                        }
-                    }
-                }
-            }
+            for (int idx = 0; idx < right.getN(); idx++)
+                if (idx % k == id) for (int i = 0; i < getM(); i++)
+                    for (int j = 0; j < getN(); j++)
+                        result[i][idx] += elements[i][j] * right.elements[j][idx];
         }
     }
 
