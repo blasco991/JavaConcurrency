@@ -1,15 +1,13 @@
 package com.blasco991.matrixMultiplication;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
 import java.util.function.UnaryOperator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Matrix {
 
@@ -18,7 +16,7 @@ public class Matrix {
 
     final Double[][] elements;
     private final static Random random = ThreadLocalRandom.current();
-    //private final static ExecutorService executor = Executors.newCachedThreadPool();
+    private final static ExecutorService executor = Executors.newCachedThreadPool();
 
     Matrix(Double[][] elements) {
         this.elements = elements;
@@ -99,14 +97,16 @@ public class Matrix {
     Matrix parallelMultiply(Matrix right) {
         Double[][] result = Matrix.constructMatrix(getM(), right.getN());
         int k = Runtime.getRuntime().availableProcessors();
-        final ExecutorService executor = Executors.newCachedThreadPool();
-        IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, k, right, result)));
-        executor.shutdown();
-        try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        List<Future> futures = IntStream.rangeClosed(0, k).mapToObj(
+                i -> executor.submit(new Worker(i, k, right, result))
+        ).collect(Collectors.toList());
+        futures.forEach(future -> {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
         return new Matrix(result);
     }
 
