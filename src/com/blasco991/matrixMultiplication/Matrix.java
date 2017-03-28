@@ -15,7 +15,7 @@ public class Matrix {
     private final static int M = 100;
 
     final Double[][] elements;
-    private final static Random random = ThreadLocalRandom.current();
+    private final static Random random = new Random();
     private final static ExecutorService executor = Executors.newCachedThreadPool();
 
     Matrix(Double[][] elements) {
@@ -28,7 +28,7 @@ public class Matrix {
 
         this.elements = IntStream.range(0, m).parallel().mapToObj(
                 i -> IntStream.range(0, n).mapToObj(
-                        j -> random.nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
+                        j -> ThreadLocalRandom.current().nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
         ).toArray(Double[][]::new);
     }
 
