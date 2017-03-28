@@ -1,24 +1,24 @@
 package com.blasco991.matrixMultiplication;
 
+import java.util.Random;
 import java.util.Arrays;
 import java.util.Formatter;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.function.UnaryOperator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Matrix {
 
     final static int K = 10;
-    private final static int M = 1000;
+    private final static int M = 100;
 
     final Double[][] elements;
     private final static Random random = ThreadLocalRandom.current();
-    private final static ExecutorService executor = Executors.newCachedThreadPool();
+    //private final static ExecutorService executor = Executors.newCachedThreadPool();
 
     Matrix(Double[][] elements) {
         this.elements = elements;
@@ -32,7 +32,6 @@ public class Matrix {
                 i -> IntStream.range(0, n).mapToObj(
                         j -> random.nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
         ).toArray(Double[][]::new);
-
     }
 
     private Matrix(Matrix left, Matrix right) {
@@ -98,9 +97,9 @@ public class Matrix {
     }
 
     Matrix parallelMultiply(Matrix right) {
-        Double[][] result = new Double[getM()][right.getN()];
-        Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
+        Double[][] result = Matrix.constructMatrix(getM(), right.getN());
         int k = Runtime.getRuntime().availableProcessors();
+        final ExecutorService executor = Executors.newCachedThreadPool();
         IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, k, right, result)));
         executor.shutdown();
         try {
@@ -126,8 +125,7 @@ public class Matrix {
     }
 
     Matrix parallelStreamMultiply(Matrix right) {
-        final Double[][] result = new Double[getM()][right.getN()];
-        Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
+        final Double[][] result = constructMatrix(getM(), right.getN());
         IntStream.range(0, right.getN()).forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
                         (int i) -> IntStream.range(0, getN()).forEach(
@@ -204,6 +202,12 @@ public class Matrix {
                                     j -> result[i][q] += elements[i][j] * right.elements[j][q]
                             )));
         }
+    }
+
+    private static Double[][] constructMatrix(int m, int n) {
+        Double[][] result = new Double[m][n];
+        Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
+        return result;
     }
 
 }
