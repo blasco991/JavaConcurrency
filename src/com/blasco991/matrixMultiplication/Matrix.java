@@ -9,7 +9,7 @@ import java.util.function.UnaryOperator;
 public class Matrix {
 
     final static int K = 100;
-    private final static int M = 100;
+    private final static int M = 1000;
 
     final double[][] elements;
     private final static Random random = new Random();
