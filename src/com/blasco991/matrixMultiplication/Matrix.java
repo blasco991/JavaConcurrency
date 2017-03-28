@@ -8,8 +8,8 @@ import java.util.function.UnaryOperator;
 
 public class Matrix {
 
-    final static int K = 10;
-    private final static int M = 300;
+    final static int K = 100;
+    private final static int M = 500;
 
     final double[][] elements;
     private final static Random random = new Random();
@@ -94,10 +94,9 @@ public class Matrix {
     Matrix parallelMultiply(Matrix right) {
         double[][] result = Matrix.constructMatrix(getM(), right.getN());
         List<Future> futures = new ArrayList<>();
-        for (int i = 0; i <= k; i++) {
-            Future<?> submit = executor.submit(new Worker(i, right, result));
-            futures.add(submit);
-        }
+        for (int i = 0; i < k; i++)
+            futures.add(executor.submit(new Worker(i, right, result)));
+
         for (Future future : futures) {
             try {
                 future.get();
@@ -179,7 +178,6 @@ public class Matrix {
     }
 
     private class Worker implements Runnable {
-
         private final int id;
         private final Matrix right;
         private final double[][] result;
