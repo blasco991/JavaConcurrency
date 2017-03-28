@@ -124,9 +124,9 @@ public class Matrix {
 
     Matrix parallelStreamMultiply(Matrix right) {
         final double[][] result = constructMatrix(getM(), right.getN());
-        IntStream.range(0, right.getN()).forEach(
+        IntStream.range(0, right.getN()).parallel().forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
-                        (int i) -> IntStream.range(0, getN()).parallel().forEach(
+                        (int i) -> IntStream.range(0, getN()).forEach(
                                 (int j) -> result[i][q] += elements[i][j] * right.elements[j][q]
                         )
                 )
