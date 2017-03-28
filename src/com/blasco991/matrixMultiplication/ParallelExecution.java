@@ -28,5 +28,7 @@ public class ParallelExecution {
         System.out.println(new Formatter().format("Sequential time:\t\t%s ms", sequentialTime));
         System.out.println(new Formatter().format("Parallel time:\t\t\t%s ms", parallelTime));
         System.out.println(new Formatter().format("Parallel stream time:\t\t\t%s ms", parallelStreamTime));
+
+        Matrix.shutdown();
     }
 }

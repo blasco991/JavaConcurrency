@@ -1,6 +1,9 @@
 package com.blasco991.matrixMultiplication;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.Arrays;
+import java.util.Formatter;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
@@ -94,22 +97,16 @@ public class Matrix {
     Matrix parallelMultiply(Matrix right) {
         Double[][] result = Matrix.constructMatrix(getM(), right.getN());
         int k = Runtime.getRuntime().availableProcessors();
-        Collection tasks = IntStream.rangeClosed(0, k).mapToObj(
-                i -> new Worker(i, k, right, result)
+        List<Future> futures = IntStream.rangeClosed(0, k).mapToObj(
+                i -> executor.submit(new Worker(i, k, right, result))
         ).collect(Collectors.toList());
-        List<Future<Boolean>> futures = null;
-        try {
-            futures = executor.invokeAll(tasks);
-            futures.forEach(future -> {
-                try {
-                    future.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        /*futures.forEach(future -> {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });*/
         return new Matrix(result);
     }
 
@@ -183,7 +180,7 @@ public class Matrix {
                         .toArray()).toArray(Double[][]::new);
     }
 
-    private class Worker implements Callable<Boolean> {
+    private class Worker implements Runnable {
 
         private final int id;
         private final Matrix right;
@@ -198,13 +195,12 @@ public class Matrix {
         }
 
         @Override
-        public Boolean call() {
+        public void run() {
             IntStream.range(0, right.getN()).filter(q -> q % k == id).forEach(
                     q -> IntStream.range(0, getM()).forEach(
                             i -> IntStream.range(0, getN()).forEach(
                                     j -> result[i][q] += elements[i][j] * right.elements[j][q]
                             )));
-            return true;
         }
     }
 
@@ -214,4 +210,7 @@ public class Matrix {
         return result;
     }
 
+    protected static void shutdown(){
+        executor.shutdown();
+    }
 }
