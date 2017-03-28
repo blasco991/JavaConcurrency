@@ -8,8 +8,8 @@ import java.util.function.UnaryOperator;
 
 public class Matrix {
 
-    final static int K = 100;
-    private final static int M = 1000;
+    final static int K = 10;
+    private final static int M = 300;
 
     final double[][] elements;
     private final static Random random = new Random();
@@ -24,9 +24,9 @@ public class Matrix {
         if (m <= 0 || n <= 0)
             throw new IllegalArgumentException("dimensions should be positive");
 
-        this.elements = IntStream.range(0, m).parallel().mapToObj(
+        this.elements = IntStream.range(0, m).mapToObj(
                 i -> ThreadLocalRandom.current().doubles().limit(n).toArray()
-        ).toArray(double[][]::new);
+        ).parallel().toArray(double[][]::new);
     }
 
     private Matrix(Matrix left, Matrix right) {
@@ -126,7 +126,7 @@ public class Matrix {
         final double[][] result = constructMatrix(getM(), right.getN());
         IntStream.range(0, right.getN()).forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
-                        (int i) -> IntStream.range(0, getN()).forEach(
+                        (int i) -> IntStream.range(0, getN()).parallel().forEach(
                                 (int j) -> result[i][q] += elements[i][j] * right.elements[j][q]
                         )
                 )
@@ -167,15 +167,15 @@ public class Matrix {
     }
 
     static UnaryOperator<double[][]> transposeParallel() {
-        return (double[][] col) -> IntStream.range(0, col[0].length).parallel().mapToObj(
+        return (double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
-                        .toArray()).toArray(double[][]::new);
+                        .toArray()).parallel().toArray(double[][]::new);
     }
 
     static UnaryOperator<double[][]> transpose() {
         return (double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
-                        .toArray()).toArray(double[][]::new);
+                        .toArray()).parallel().toArray(double[][]::new);
     }
 
     private class Worker implements Runnable {
@@ -201,8 +201,9 @@ public class Matrix {
 
     private static double[][] constructMatrix(int m, int n) {
         double[][] result = new double[m][n];
-        for (double[] row : result)
-            Arrays.fill(row, 0d);
+        Arrays.stream(result).parallel().forEach(
+                row -> Arrays.fill(row, 0d)
+        );
         return result;
     }
 
