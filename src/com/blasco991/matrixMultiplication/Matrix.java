@@ -100,7 +100,7 @@ public class Matrix {
         double[][] result = new double[getM()][right.getN()];
         int k = Runtime.getRuntime().availableProcessors() + 1;
         ExecutorService executor = Executors.newCachedThreadPool();
-        IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, right, result)));
+        IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, k, right, result)));
         executor.shutdown();
         try {
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
@@ -189,8 +189,8 @@ public class Matrix {
         private final double[][] result;
         private final int k;
 
-        Worker(int id, Matrix right, double[][] result) {
-            this.k = Runtime.getRuntime().availableProcessors();
+        Worker(int id, int k, Matrix right, double[][] result) {
+            this.k = k;
             this.result = result;
             this.right = right;
             this.id = id;
@@ -199,9 +199,9 @@ public class Matrix {
         @Override
         public void run() {
             IntStream.range(0, right.getN()).filter(q -> q % k == id).forEach(
-                    (int q) -> IntStream.range(0, getM()).forEach(
-                            (int i) -> IntStream.range(0, getN()).forEach(
-                                    (int j) -> result[i][q] += elements[i][j] * right.elements[j][q]
+                    q -> IntStream.range(0, getM()).forEach(
+                            i -> IntStream.range(0, getN()).forEach(
+                                    j -> result[i][q] += elements[i][j] * right.elements[j][q]
                             )
                     )
             );
