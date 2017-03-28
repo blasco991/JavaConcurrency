@@ -11,11 +11,11 @@ public class Matrix {
     final static int K = 100;
     private final static int M = 100;
 
-    final Double[][] elements;
+    final double[][] elements;
     private final static Random random = new Random();
     private final static ExecutorService executor = Executors.newCachedThreadPool();
 
-    Matrix(Double[][] elements) {
+    Matrix(double[][] elements) {
         this.elements = elements;
     }
 
@@ -23,10 +23,10 @@ public class Matrix {
         if (m <= 0 || n <= 0)
             throw new IllegalArgumentException("dimensions should be positive");
 
-        this.elements = IntStream.range(0, m).mapToObj(
-                i -> IntStream.range(0, n).mapToObj(
-                        j -> ThreadLocalRandom.current().nextDouble() * 100.0 - 50.0).toArray(Double[]::new)
-        ).toArray(Double[][]::new);
+        this.elements = new double[m][n];
+        for (int x = 0; x < n; x++)
+            for (int y = 0; y < m; y++)
+                elements[y][x] = random.nextDouble() * 100.0 - 50.0;
     }
 
     private Matrix(Matrix left, Matrix right) {
@@ -37,7 +37,7 @@ public class Matrix {
 
         int n = right.getN();
 
-        this.elements = new Double[m][n];
+        this.elements = new double[m][n];
         for (int x = 0; x < n; x++)
             for (int y = 0; y < m; y++) {
                 double sum = 0.0;
@@ -92,7 +92,7 @@ public class Matrix {
     }
 
     Matrix parallelMultiply(Matrix right) {
-        Double[][] result = Matrix.constructMatrix(getM(), right.getN());
+        double[][] result = Matrix.constructMatrix(getM(), right.getN());
         int k = Runtime.getRuntime().availableProcessors();
         List<Future> futures = new ArrayList<>();
         for (int i = 0; i <= k; i++) {
@@ -124,7 +124,7 @@ public class Matrix {
     }
 
     Matrix parallelStreamMultiply(Matrix right) {
-        final Double[][] result = constructMatrix(getM(), right.getN());
+        final double[][] result = constructMatrix(getM(), right.getN());
         IntStream.range(0, right.getN()).forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
                         (int i) -> IntStream.range(0, getN()).forEach(
@@ -167,26 +167,26 @@ public class Matrix {
         return equals == 1;
     }
 
-    static UnaryOperator<Double[][]> transposeParallel() {
-        return (Double[][] col) -> IntStream.range(0, col[0].length).parallel().mapToObj(
+    static UnaryOperator<double[][]> transposeParallel() {
+        return (double[][] col) -> IntStream.range(0, col[0].length).parallel().mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
-                        .toArray()).toArray(Double[][]::new);
+                        .toArray()).toArray(double[][]::new);
     }
 
-    static UnaryOperator<Double[][]> transpose() {
-        return (Double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
+    static UnaryOperator<double[][]> transpose() {
+        return (double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
-                        .toArray()).toArray(Double[][]::new);
+                        .toArray()).toArray(double[][]::new);
     }
 
     private class Worker implements Runnable {
 
         private final int id;
         private final Matrix right;
-        private final Double[][] result;
+        private final double[][] result;
         private final int k;
 
-        Worker(int id, int k, Matrix right, Double[][] result) {
+        Worker(int id, int k, Matrix right, double[][] result) {
             this.k = k;
             this.result = result;
             this.right = right;
@@ -212,8 +212,8 @@ public class Matrix {
         }
     }
 
-    private static Double[][] constructMatrix(int m, int n) {
-        Double[][] result = new Double[m][n];
+    private static double[][] constructMatrix(int m, int n) {
+        double[][] result = new double[m][n];
         Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
         return result;
     }
