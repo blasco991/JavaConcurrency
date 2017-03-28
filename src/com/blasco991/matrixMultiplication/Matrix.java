@@ -1,9 +1,6 @@
 package com.blasco991.matrixMultiplication;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Arrays;
-import java.util.Formatter;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
@@ -97,16 +94,18 @@ public class Matrix {
     Matrix parallelMultiply(Matrix right) {
         Double[][] result = Matrix.constructMatrix(getM(), right.getN());
         int k = Runtime.getRuntime().availableProcessors();
-        List<Future> futures = IntStream.rangeClosed(0, k).mapToObj(
-                i -> executor.submit(new Worker(i, k, right, result))
-        ).collect(Collectors.toList());
-        futures.forEach(future -> {
+        List<Future> futures = new ArrayList<>();
+        for (int i = 0; i <= k; i++) {
+            Future<?> submit = executor.submit(new Worker(i, k, right, result));
+            futures.add(submit);
+        }
+        for (Future future : futures) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        });
+        }
         return new Matrix(result);
     }
 
@@ -196,11 +195,20 @@ public class Matrix {
 
         @Override
         public void run() {
-            IntStream.range(0, right.getN()).filter(q -> q % k == id).forEach(
-                    q -> IntStream.range(0, getM()).forEach(
-                            i -> IntStream.range(0, getN()).forEach(
-                                    j -> result[i][q] += elements[i][j] * right.elements[j][q]
-                            )));
+            int bound = right.getN();
+            for (int idx = 0; idx < bound; idx++) {
+                int q = idx;
+                if (q % k == id) {
+                    int bound1 = getM();
+                    for (int i1 = 0; i1 < bound1; i1++) {
+                        int i = i1;
+                        int bound2 = getN();
+                        for (int j = 0; j < bound2; j++) {
+                            result[i][q] += elements[i][j] * right.elements[j][q];
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -210,7 +218,7 @@ public class Matrix {
         return result;
     }
 
-    static void shutdown(){
+    static void shutdown() {
         executor.shutdown();
     }
 }
