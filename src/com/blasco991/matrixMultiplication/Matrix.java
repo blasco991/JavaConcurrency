@@ -100,13 +100,13 @@ public class Matrix {
         List<Future> futures = IntStream.rangeClosed(0, k).mapToObj(
                 i -> executor.submit(new Worker(i, k, right, result))
         ).collect(Collectors.toList());
-        /*futures.forEach(future -> {
+        futures.forEach(future -> {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        });*/
+        });
         return new Matrix(result);
     }
 
