@@ -100,7 +100,7 @@ public class Matrix {
     Matrix parallelMultiply(Matrix right) {
         Double[][] result = new Double[getM()][right.getN()];
         Arrays.stream(result).parallel().forEach(row -> Arrays.fill(row, Double.valueOf(0)));
-        int k = Runtime.getRuntime().availableProcessors() + 1;
+        int k = Runtime.getRuntime().availableProcessors();
         IntStream.rangeClosed(0, k).forEach(i -> executor.execute(new Worker(i, k, right, result)));
         executor.shutdown();
         try {
