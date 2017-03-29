@@ -8,8 +8,8 @@ import java.util.function.UnaryOperator;
 
 public class Matrix {
 
-    final static int K = 100;
-    private final static int M = 500;
+    final static int K = 10000;
+    private final static int M = 281;
 
     final double[][] elements;
     private final static Random random = new Random();

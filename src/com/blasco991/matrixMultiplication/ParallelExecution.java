@@ -25,9 +25,9 @@ public class ParallelExecution {
             Matrix.parallelStreamRandomMultiplication();
         long parallelStreamTime = System.currentTimeMillis() - startTime;
 
-        System.out.println(new Formatter().format("Sequential time:\t\t%s ms", sequentialTime));
-        System.out.println(new Formatter().format("Parallel time:\t\t\t%s ms", parallelTime));
-        System.out.println(new Formatter().format("Parallel stream time:\t\t\t%s ms", parallelStreamTime));
+        System.out.println(new Formatter().format("Sequential time:\t\t%s s", sequentialTime/1000));
+        System.out.println(new Formatter().format("Parallel time:\t\t\t%s s", parallelTime/1000));
+        System.out.println(new Formatter().format("Parallel stream time:\t\t\t%s s", parallelStreamTime/1000));
 
         Matrix.shutdown();
     }
