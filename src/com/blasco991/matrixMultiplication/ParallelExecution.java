@@ -14,22 +14,20 @@ public class ParallelExecution {
         for (int counter = 0; counter < Matrix.K; counter++)
             Matrix.randomMultiplication();
         long sequentialTime = System.currentTimeMillis() - startTime;
+        System.out.println(new Formatter().format("Sequential time:\t\t%s s", sequentialTime / 1000));
 
         startTime = System.currentTimeMillis();
         for (int counter = 0; counter < Matrix.K; counter++)
             Matrix.parallelRandomMultiplication();
         long parallelTime = System.currentTimeMillis() - startTime;
+        System.out.println(new Formatter().format("Parallel time:\t\t\t%s s", parallelTime / 1000));
         Matrix.shutdown();
 
         startTime = System.currentTimeMillis();
         for (int counter = 0; counter < Matrix.K; counter++)
             Matrix.parallelStreamRandomMultiplication();
         long parallelStreamTime = System.currentTimeMillis() - startTime;
-
-        System.out.println(new Formatter().format("Sequential time:\t\t%s s", sequentialTime/1000));
-        System.out.println(new Formatter().format("Parallel time:\t\t\t%s s", parallelTime/1000));
-        System.out.println(new Formatter().format("Parallel stream time:\t\t\t%s s", parallelStreamTime/1000));
-
-
+        System.out.println(new Formatter().format("Parallel stream time:\t\t\t%s s", parallelStreamTime / 1000));
+        
     }
 }

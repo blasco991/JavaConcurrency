@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 
 public class Matrix {
 
-    final static int K = 10000;
+    final static int K = 5000;
     private final static int M = 281;
 
     final double[][] elements;
@@ -45,7 +45,6 @@ public class Matrix {
                     sum += left.elements[y][k] * right.elements[k][x];
                 this.elements[y][x] = sum;
             }
-
     }
 
     private int getM() {
@@ -56,21 +55,6 @@ public class Matrix {
         return elements[0].length;
     }
 
-    Matrix times(Matrix other) {
-        return new Matrix(this, other);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int n = getN(), m = getM(), y = 0; y < m; y++) {
-            for (int x = 0; x < n; x++)
-                sb.append(String.format("%10.2f", elements[y][x]));
-            sb.append('\n');
-        }
-        return sb.toString();
-    }
-
     static void randomMultiplication() {
         // random dimensions between 20 and M, inclusive
         int m = random.nextInt(Matrix.M) + 20;
@@ -79,7 +63,7 @@ public class Matrix {
 
         Matrix m1 = new Matrix(m, p);
         Matrix m2 = new Matrix(p, n);
-        m1.times(m2);
+        m1.multiply(m2);
     }
 
     static void parallelRandomMultiplication() {
@@ -89,6 +73,19 @@ public class Matrix {
         Matrix m1 = new Matrix(m, p);
         Matrix m2 = new Matrix(p, n);
         m1.parallelMultiply(m2);
+    }
+
+    static void parallelStreamRandomMultiplication() {
+        int m = random.nextInt(Matrix.M) + 20;
+        int p = random.nextInt(Matrix.M) + 20;
+        int n = random.nextInt(Matrix.M) + 20;
+        Matrix m1 = new Matrix(m, p);
+        Matrix m2 = new Matrix(p, n);
+        m1.parallelStreamMultiply(m2);
+    }
+
+    Matrix multiply(Matrix other) {
+        return new Matrix(this, other);
     }
 
     Matrix parallelMultiply(Matrix right) {
@@ -105,20 +102,6 @@ public class Matrix {
             }
         }
         return new Matrix(result);
-    }
-
-    static void parallelStreamRandomMultiplication() {
-        int m = random.nextInt(Matrix.M) + 20;
-        int p = random.nextInt(Matrix.M) + 20;
-        int n = random.nextInt(Matrix.M) + 20;
-        Matrix m1 = new Matrix(m, p);
-        Matrix m2 = new Matrix(p, n);
-        m1.parallelStreamMultiply(m2);
-    }
-
-    public String toStringStream() {
-        return Arrays.stream(elements).map(Arrays::toString)
-                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     Matrix parallelStreamMultiply(Matrix right) {
@@ -175,6 +158,22 @@ public class Matrix {
         return (double[][] col) -> IntStream.range(0, col[0].length).mapToObj(
                 (int row) -> Arrays.stream(col).mapToDouble(doubles -> doubles[row])
                         .toArray()).parallel().toArray(double[][]::new);
+    }
+
+    public String toStringStream() {
+        return Arrays.stream(elements).map(Arrays::toString)
+                .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int n = getN(), m = getM(), y = 0; y < m; y++) {
+            for (int x = 0; x < n; x++)
+                sb.append(String.format("%10.2f", elements[y][x]));
+            sb.append('\n');
+        }
+        return sb.toString();
     }
 
     private class Worker implements Runnable {

@@ -13,7 +13,7 @@ public class ParallelCorrectness {
         Matrix m2 = new Matrix(m1.getN(), 80);
 
         Matrix parallel = m1.parallelStreamMultiply(m2);
-        Matrix sequential = m1.times(m2);
+        Matrix sequential = m1.multiply(m2);
 
         System.out.println("Arrays.deepEquals:\t\t" + parallel.arraysDeepEquals(sequential));
         System.out.println("<Array>.equals:\t\t\t" + parallel.equals(sequential));
@@ -23,7 +23,7 @@ public class ParallelCorrectness {
         Matrix m4 = new Matrix(m3.getN(), 4);
 
         Matrix parallel2 = m3.parallelMultiply(m4);
-        Matrix sequential2 = m3.times(m4);
+        Matrix sequential2 = m3.multiply(m4);
 
         System.out.println("\nArrays.deepEquals:\t\t" + parallel2.arraysDeepEquals(sequential2));
         System.out.println("<Array>.equals:\t\t\t" + parallel2.equals(sequential2));

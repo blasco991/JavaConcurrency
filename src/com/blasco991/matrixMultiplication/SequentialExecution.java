@@ -1,7 +1,5 @@
 package com.blasco991.matrixMultiplication;
 
-import com.blasco991.matrixMultiplication.Matrix;
-
 /**
  * Created by blasco991 on 14/03/17.
  */
@@ -11,7 +9,7 @@ public class SequentialExecution {
 
         Matrix m1 = new Matrix(4, 5);
         Matrix m2 = new Matrix(5, 8);
-        Matrix m3 = m1.times(m2);
+        Matrix m3 = m1.multiply(m2);
         System.out.println("m1:\n" + m1);
         System.out.println("m2:\n" + m2);
         System.out.println("m1 x m2:\n" + m3);
