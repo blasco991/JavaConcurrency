@@ -92,7 +92,7 @@ public class Matrix {
     }
 
     Matrix parallelMultiply(Matrix right) {
-        double[][] result = Matrix.constructMatrix(getM(), right.getN());
+        double[][] result = new double[getM()][right.getN()];
         List<Future> futures = new ArrayList<>();
         for (int i = 0; i < k; i++)
             futures.add(executor.submit(new Worker(i, right, result)));
@@ -122,7 +122,7 @@ public class Matrix {
     }
 
     Matrix parallelStreamMultiply(Matrix right) {
-        final double[][] result = constructMatrix(getM(), right.getN());
+        final double[][] result = new double[getM()][right.getN()];
         IntStream.range(0, right.getN()).parallel().forEach(
                 (int q) -> IntStream.range(0, getM()).forEach(
                         (int i) -> IntStream.range(0, getN()).forEach(
@@ -195,14 +195,6 @@ public class Matrix {
                     for (int j = 0; j < getN(); j++)
                         result[i][idx] += elements[i][j] * right.elements[j][idx];
         }
-    }
-
-    private static double[][] constructMatrix(int m, int n) {
-        double[][] result = new double[m][n];
-        Arrays.stream(result).parallel().forEach(
-                row -> Arrays.fill(row, 0d)
-        );
-        return result;
     }
 
     static void shutdown() {
