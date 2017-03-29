@@ -32,7 +32,5 @@ public class ParallelCorrectness {
         System.out.println("m3 x m4:\n" + sequential2);
         System.out.println("m3 x m4 parallel :\n" + parallel2);
 
-        Matrix.shutdown();
-
     }
 }

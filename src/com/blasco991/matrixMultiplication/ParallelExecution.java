@@ -19,6 +19,7 @@ public class ParallelExecution {
         for (int counter = 0; counter < Matrix.K; counter++)
             Matrix.parallelRandomMultiplication();
         long parallelTime = System.currentTimeMillis() - startTime;
+        Matrix.shutdown();
 
         startTime = System.currentTimeMillis();
         for (int counter = 0; counter < Matrix.K; counter++)
@@ -29,6 +30,6 @@ public class ParallelExecution {
         System.out.println(new Formatter().format("Parallel time:\t\t\t%s s", parallelTime/1000));
         System.out.println(new Formatter().format("Parallel stream time:\t\t\t%s s", parallelStreamTime/1000));
 
-        Matrix.shutdown();
+
     }
 }
