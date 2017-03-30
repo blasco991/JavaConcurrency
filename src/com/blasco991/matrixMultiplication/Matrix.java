@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 
 public class Matrix {
 
-    final static int K = 5000;
+    final static int K = 1000;
     private final static int M = 281;
 
     final double[][] elements;
