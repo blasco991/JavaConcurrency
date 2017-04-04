@@ -1,14 +1,23 @@
 package com.blasco991.simpleelections.view;
 
-
 import com.blasco991.annotations.UiThread;
 
-public interface View {
-    // 3: change your display
-    @UiThread
-    void askForNewParty();
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
-    // 4: I've changed
-    @UiThread
-    void onModelChanged();
+
+public interface View {
+	public final ScheduledExecutorService exec
+		= Executors.newScheduledThreadPool(2);
+
+	// 3: change your display
+	@UiThread
+	void askForNewParty();
+
+	@UiThread 
+	void reportSaved();
+
+	// 4: I've changed
+	@UiThread
+	void onModelChanged();
 }

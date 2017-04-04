@@ -1,13 +1,13 @@
 package com.blasco991.simpleelections.model;
 
+import com.blasco991.annotations.UiThread;
+import com.blasco991.simpleelections.MVC;
+import com.blasco991.simpleelections.view.View;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
-import com.blasco991.annotations.UiThread;
-import com.blasco991.simpleelections.MVC;
-import com.blasco991.simpleelections.view.View;
 import net.jcip.annotations.ThreadSafe;
 
 /**

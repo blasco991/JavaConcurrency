@@ -1,6 +1,5 @@
 package com.blasco991.simpleelections.view;
 
-
 import com.blasco991.annotations.UiThread;
 import com.blasco991.simpleelections.controller.Controller;
 
@@ -15,26 +14,26 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 class InsertPartyNameDialog extends JDialog {
 
-    @UiThread
-    public InsertPartyNameDialog(Controller controller) {
-        super((Dialog) null);
+	@UiThread
+	public InsertPartyNameDialog(Controller controller) {
+		super((Dialog) null);
 
-        setTitle("Insert Party Name");
-        setLayout(new FlowLayout());
-        add(new JLabel("Insert new party name: "));
+		setTitle("Insert Party Name");
+		setLayout(new FlowLayout());
+		add(new JLabel("Insert new party name: "));
 
-        JTextField textField = new JTextField("nome partito");
-        textField.addActionListener(e -> {
-            String party = textField.getText();
-            if (!party.isEmpty())
-                controller.addParty(party);
+		JTextField textField = new JTextField("nome partito");
+		textField.addActionListener(e -> {
+			String party = textField.getText();
+			if (!party.isEmpty())
+				controller.addParty(party);
 
-            setVisible(false);
-            dispose();
-        });
-        add(textField);
+			setVisible(false);
+			dispose();
+		});
+		add(textField);
 
-        pack();
-        setVisible(true);
-    }
+		pack();
+		setVisible(true);
+	}
 }
