@@ -30,8 +30,3 @@ public class VoteSaver extends Thread {
         EventQueue.invokeLater(() -> view.reportSaved());
     }
 }
-
-
-
-
-
