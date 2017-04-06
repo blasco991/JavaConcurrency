@@ -30,8 +30,8 @@ public class VoteLoader extends Thread {
     @Override
     public void run() {
         try {
-            String uri = MessageFormat.format("/SendVotes?howmany={0}&parties={1}",
-                    parties.size() * ThreadLocalRandom.current().nextInt(100),
+            String uri = MessageFormat.format("/SendVotes?howmany=" +
+                            parties.size() * ThreadLocalRandom.current().nextInt(100) + "&parties={0}",
                     URLEncoder.encode(parties.stream().collect(Collectors.joining(",")), StandardCharsets.UTF_8.displayName()));
 
             URL url = new URL("https://servlets-blasco991.herokuapp.com" + uri);

@@ -1,15 +1,13 @@
 package com.blasco991.simpleElections.view;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
 import com.blasco991.annotations.UiThread;
 import com.blasco991.simpleElections.MVC;
+import com.blasco991.simpleElections.controller.Controller;
 import com.blasco991.simpleElections.model.Model;
 import net.jcip.annotations.ThreadSafe;
 
@@ -20,13 +18,15 @@ public class NumericElectionsFrame extends JFrame implements View {
     private final JPanel scores;
     private JLabel saved;
     private JButton save;
+    private JButton load;
 
     @UiThread
     public NumericElectionsFrame(MVC mvc) {
         this.mvc = mvc;
         mvc.register(this);
 
-        setPreferredSize(new Dimension(430, 300));
+        setLocationByPlatform(true);
+        setPreferredSize(new Dimension(450, 450));
         setTitle("Numeric Elections");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,8 +47,11 @@ public class NumericElectionsFrame extends JFrame implements View {
         JButton addParty = new JButton("+");
         addParty.addActionListener(e -> mvc.controller.askForNewParty(this));
         south.add(addParty);
-        JButton load = new JButton("load");
-        load.addActionListener(e -> mvc.controller.loadVotes(this));
+        load = new JButton("load");
+        load.addActionListener(e -> {
+            load.setEnabled(false);
+            mvc.controller.loadVotes(this);
+        });
         south.add(load);
         save = new JButton("save");
         save.addActionListener(e -> {
@@ -87,7 +90,28 @@ public class NumericElectionsFrame extends JFrame implements View {
     @Override
     @UiThread
     public void askForNewParty() {
-        new InsertPartyNameDialog(mvc.controller);
+        new JDialog(this) {
+            {
+                setLocationRelativeTo(this.getOwner());
+                setTitle("Insert Party Name");
+                setLayout(new FlowLayout());
+                add(new JLabel("Insert new party name: "));
+
+                JTextField textField = new JTextField();
+                textField.addActionListener(e -> {
+                    String party = textField.getText();
+                    if (!party.isEmpty())
+                        mvc.controller.addParty(party);
+
+                    setVisible(false);
+                    dispose();
+                });
+                add(textField);
+
+                pack();
+                setVisible(true);
+            }
+        };
     }
 
     @Override
@@ -101,6 +125,14 @@ public class NumericElectionsFrame extends JFrame implements View {
             });
         };
         exec.schedule(cleanUp, 2, TimeUnit.SECONDS);
+    }
+
+    @Override
+    @UiThread
+    public void reportLoaded() {
+        EventQueue.invokeLater(() -> {
+            load.setEnabled(true);
+        });
     }
 
 

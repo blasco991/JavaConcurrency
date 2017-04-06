@@ -15,6 +15,7 @@ import javafx.scene.chart.PieChart;
 import net.jcip.annotations.ThreadSafe;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -36,6 +37,8 @@ public class PieChartView extends JFrame implements View {
         this.mvc = mvc;
         mvc.register(this);
 
+        setLocationByPlatform(true);
+        setPreferredSize(new Dimension(600, 450));
         JFXPanel fxPanel = buildWidgets();
 
         setTitle("Pie Chart Elections");
@@ -83,5 +86,9 @@ public class PieChartView extends JFrame implements View {
             pieChart.setData(list);
         });
         pack();
+    }
+
+    @Override
+    public void reportLoaded() {
     }
 }

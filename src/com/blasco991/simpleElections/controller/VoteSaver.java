@@ -27,6 +27,6 @@ public class VoteSaver extends Thread {
             e.printStackTrace();
         }
 
-        EventQueue.invokeLater(() -> view.reportSaved());
+        EventQueue.invokeLater(view::reportSaved);
     }
 }

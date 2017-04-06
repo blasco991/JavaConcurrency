@@ -7,17 +7,20 @@ import java.util.concurrent.ScheduledExecutorService;
 
 
 public interface View {
-	public final ScheduledExecutorService exec
-		= Executors.newScheduledThreadPool(2);
+    ScheduledExecutorService exec = Executors.newScheduledThreadPool(2);
 
-	// 3: change your display
-	@UiThread
-	void askForNewParty();
+    // 3: change your display
+    @UiThread
+    void askForNewParty();
 
-	@UiThread 
-	void reportSaved();
+    @UiThread
+    void reportSaved();
 
-	// 4: I've changed
-	@UiThread
-	void onModelChanged();
+    // 4: I've changed
+    @UiThread
+    void onModelChanged();
+
+    @UiThread
+    void reportLoaded();
+
 }

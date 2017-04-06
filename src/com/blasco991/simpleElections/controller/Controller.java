@@ -4,11 +4,14 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.blasco991.annotations.UiThread;
 import com.blasco991.annotations.WorkerThread;
 import com.blasco991.simpleElections.MVC;
 import com.blasco991.simpleElections.view.View;
+import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
 
 /**
@@ -55,11 +58,9 @@ public class Controller {
 
     @UiThread
     public void loadVotes(View view) {
-        List<String> parties = new ArrayList<>();
-        mvc.model.getParties().forEach(parties::add);
-        VoteLoader voteLoader = new VoteLoader(parties, mvc.model);
-        Executors.newSingleThreadExecutor().execute(voteLoader);
-        EventQueue.invokeLater(view::onModelChanged);
+        List<String> parties  = StreamSupport.stream(mvc.model.getParties().spliterator(), false).collect(Collectors.toList());
+        Executors.newSingleThreadExecutor().execute(new VoteLoader(parties, mvc.model));
+        EventQueue.invokeLater(view::reportLoaded);
     }
 }
 

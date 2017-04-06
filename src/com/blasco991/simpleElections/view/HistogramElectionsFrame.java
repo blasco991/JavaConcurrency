@@ -29,8 +29,8 @@ public class HistogramElectionsFrame extends JFrame implements View {
 	public HistogramElectionsFrame(MVC mvc) {
 		this.mvc = mvc;
 		mvc.register(this);
-
-		setPreferredSize(new Dimension(450, 300));
+		setLocationByPlatform(true);
+		setPreferredSize(new Dimension(450, 450));
 		setTitle("Histogram Elections");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -80,6 +80,11 @@ public class HistogramElectionsFrame extends JFrame implements View {
 		}
 		
 		pack();
+	}
+
+	@Override
+	public void reportLoaded() {
+
 	}
 
 	@Override @UiThread
