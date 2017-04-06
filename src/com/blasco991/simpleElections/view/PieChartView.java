@@ -2,11 +2,9 @@ package com.blasco991.simpleElections.view;
 
 import com.blasco991.annotations.UiThread;
 import com.blasco991.simpleElections.MVC;
-import com.blasco991.simpleElections.model.Model;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Side;
 import javafx.scene.Group;
@@ -17,7 +15,6 @@ import net.jcip.annotations.ThreadSafe;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 
 /**
