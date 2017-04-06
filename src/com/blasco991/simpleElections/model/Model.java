@@ -1,12 +1,12 @@
-package com.blasco991.simpleelections.model;
+package com.blasco991.simpleElections.model;
 
 import com.blasco991.annotations.UiThread;
-import com.blasco991.simpleelections.MVC;
-import com.blasco991.simpleelections.view.View;
+import com.blasco991.simpleElections.MVC;
+import com.blasco991.simpleElections.view.View;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.jcip.annotations.ThreadSafe;
 
@@ -16,8 +16,9 @@ import net.jcip.annotations.ThreadSafe;
 
 @ThreadSafe
 public class Model {
+
     private MVC mvc;
-    private final Map<String, Integer> votes = new HashMap<>();
+    private final Map<String, Long> votes = new ConcurrentHashMap<>();
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
@@ -32,13 +33,13 @@ public class Model {
 
     @UiThread
     public int getVotesFor(String party) {
-        return votes.get(party);
+        return votes.get(party).intValue();
     }
 
     // 2: change your state
     @UiThread
     public void addParty(String party) {
-        votes.put(party, 0);
+        votes.put(party, 0L);
         mvc.forEachView(View::onModelChanged);
     }
 
@@ -55,4 +56,11 @@ public class Model {
             mvc.forEachView(View::onModelChanged);
         }
     }
+
+    @UiThread
+    public void importVotes(Map<String, Long> votes) {
+        this.votes.replaceAll((k, v) -> votes.getOrDefault(k, 0L));
+        mvc.forEachView(View::onModelChanged);
+    }
+
 }

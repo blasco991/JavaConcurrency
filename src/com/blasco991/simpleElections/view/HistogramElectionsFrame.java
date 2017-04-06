@@ -1,4 +1,4 @@
-package com.blasco991.simpleelections.view;
+package com.blasco991.simpleElections.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.blasco991.annotations.UiThread;
-import com.blasco991.simpleelections.MVC;
-import com.blasco991.simpleelections.model.Model;
+import com.blasco991.simpleElections.MVC;
+import com.blasco991.simpleElections.model.Model;
 import net.jcip.annotations.ThreadSafe;
 
 @SuppressWarnings("serial")

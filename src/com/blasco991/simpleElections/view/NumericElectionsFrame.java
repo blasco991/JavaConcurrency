@@ -1,4 +1,4 @@
-package com.blasco991.simpleelections.view;
+package com.blasco991.simpleElections.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -6,15 +6,11 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import com.blasco991.annotations.UiThread;
-import com.blasco991.simpleelections.MVC;
-import com.blasco991.simpleelections.model.Model;
+import com.blasco991.simpleElections.MVC;
+import com.blasco991.simpleElections.model.Model;
 import net.jcip.annotations.ThreadSafe;
 
 @SuppressWarnings("serial")
@@ -32,7 +28,7 @@ public class NumericElectionsFrame extends JFrame implements View {
 
         setPreferredSize(new Dimension(430, 300));
         setTitle("Numeric Elections");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         this.scores = buildWidgets();
 
@@ -51,6 +47,9 @@ public class NumericElectionsFrame extends JFrame implements View {
         JButton addParty = new JButton("+");
         addParty.addActionListener(e -> mvc.controller.askForNewParty(this));
         south.add(addParty);
+        JButton load = new JButton("load");
+        load.addActionListener(e -> mvc.controller.loadVotes(this));
+        south.add(load);
         save = new JButton("save");
         save.addActionListener(e -> {
             save.setEnabled(false);

@@ -1,4 +1,4 @@
-package com.blasco991.simpleelections.view;
+package com.blasco991.simpleElections.view;
 
 import java.awt.Color;
 import java.awt.Dimension;

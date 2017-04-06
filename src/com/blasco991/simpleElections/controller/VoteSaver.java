@@ -1,4 +1,4 @@
-package com.blasco991.simpleelections.controller;
+package com.blasco991.simpleElections.controller;
 
 import java.awt.EventQueue;
 import java.io.FileNotFoundException;
@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Map;
 
-import com.blasco991.simpleelections.view.View;
+import com.blasco991.simpleElections.view.View;
 
 public class VoteSaver extends Thread {
     private final Map<String, Integer> votes;

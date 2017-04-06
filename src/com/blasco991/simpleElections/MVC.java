@@ -1,8 +1,8 @@
-package com.blasco991.simpleelections;
+package com.blasco991.simpleElections;
 
-import com.blasco991.simpleelections.controller.Controller;
-import com.blasco991.simpleelections.model.Model;
-import com.blasco991.simpleelections.view.View;
+import com.blasco991.simpleElections.controller.Controller;
+import com.blasco991.simpleElections.model.Model;
+import com.blasco991.simpleElections.view.View;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
