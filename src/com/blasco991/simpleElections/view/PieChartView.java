@@ -8,16 +8,13 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Side;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.PieChart;
 import net.jcip.annotations.ThreadSafe;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by blasco991 on 06/04/17.
@@ -75,14 +72,6 @@ public class PieChartView extends JFrame implements View {
         Platform.runLater(() -> {
             list.clear();
             mvc.model.getParties().forEach(party -> list.add(new PieChart.Data(party, mvc.model.getVotesFor(party))));
-            /*for (String entry : mvc.model.getParties())
-                if (list.stream().noneMatch(element -> Objects.equals(element.getName(), entry)))
-                    list.add(new PieChart.Data(entry, mvc.model.getVotesFor(entry)));
-                else
-                    list.set(list.indexOf(list.stream().filter(
-                            element -> Objects.equals(element.getName(), entry)).findFirst().get()),
-                            new PieChart.Data(entry, mvc.model.getVotesFor(entry))
-                    );*/
             pieChart.setData(list);
         });
         pack();

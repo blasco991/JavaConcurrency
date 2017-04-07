@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +28,19 @@ public class VoteLoader extends Thread {
         this.model = model;
     }
 
+    public VoteLoader(Model model) {
+        this.parties = new ArrayList<>(0);
+        this.model = model;
+    }
+
     @Override
     public void run() {
         try {
-            String uri = MessageFormat.format("/SendVotes?howmany=" +
-                            parties.size() * ThreadLocalRandom.current().nextInt(100) + "&parties={0}",
-                    URLEncoder.encode(parties.stream().collect(Collectors.joining(",")), StandardCharsets.UTF_8.displayName()));
+            String uri = "/SendVotes";
+            if (!this.parties.isEmpty())
+                uri += "?howmany=" + parties.size() * ThreadLocalRandom.current().nextInt(100) + "&parties=" + URLEncoder.encode(parties.stream().collect(Collectors.joining(",")), StandardCharsets.UTF_8.displayName());
 
-            URL url = new URL("https://servlets-blasco991.herokuapp.com" + uri);
+            URL url = new URL("http://localhost:8080" + uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

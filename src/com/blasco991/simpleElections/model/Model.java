@@ -59,7 +59,8 @@ public class Model {
 
     @UiThread
     public void importVotes(Map<String, Long> votes) {
-        this.votes.replaceAll((k, v) -> votes.getOrDefault(k, 0L));
+        this.votes.clear();
+        this.votes.putAll(votes);
         mvc.forEachView(View::onModelChanged);
     }
 

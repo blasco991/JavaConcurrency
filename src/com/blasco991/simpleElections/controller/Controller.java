@@ -1,18 +1,17 @@
 package com.blasco991.simpleElections.controller;
 
+import com.blasco991.annotations.UiThread;
+import com.blasco991.simpleElections.MVC;
+import com.blasco991.simpleElections.view.View;
+import net.jcip.annotations.ThreadSafe;
+
 import java.awt.*;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.blasco991.annotations.UiThread;
-import com.blasco991.annotations.WorkerThread;
-import com.blasco991.simpleElections.MVC;
-import com.blasco991.simpleElections.view.View;
-import net.jcip.annotations.Immutable;
-import net.jcip.annotations.ThreadSafe;
 
 /**
  * This class is thread-sfae because of thread-confinement
@@ -58,8 +57,14 @@ public class Controller {
 
     @UiThread
     public void loadVotes(View view) {
-        List<String> parties  = StreamSupport.stream(mvc.model.getParties().spliterator(), false).collect(Collectors.toList());
+        List<String> parties = StreamSupport.stream(mvc.model.getParties().spliterator(), false).collect(Collectors.toList());
         Executors.newSingleThreadExecutor().execute(new VoteLoader(parties, mvc.model));
+        EventQueue.invokeLater(view::reportLoaded);
+    }
+
+    @UiThread
+    public void loadAll(View view) {
+        Executors.newSingleThreadExecutor().execute(new VoteLoader(mvc.model));
         EventQueue.invokeLater(view::reportLoaded);
     }
 }

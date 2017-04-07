@@ -2,12 +2,10 @@ package com.blasco991.simpleElections.view;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
-
 import javax.swing.*;
 
 import com.blasco991.annotations.UiThread;
 import com.blasco991.simpleElections.MVC;
-import com.blasco991.simpleElections.controller.Controller;
 import com.blasco991.simpleElections.model.Model;
 import net.jcip.annotations.ThreadSafe;
 
@@ -18,7 +16,6 @@ public class NumericElectionsFrame extends JFrame implements View {
     private final JPanel scores;
     private JLabel saved;
     private JButton save;
-    private JButton load;
 
     @UiThread
     public NumericElectionsFrame(MVC mvc) {
@@ -26,7 +23,7 @@ public class NumericElectionsFrame extends JFrame implements View {
         mvc.register(this);
 
         setLocationByPlatform(true);
-        setPreferredSize(new Dimension(450, 450));
+        setPreferredSize(new Dimension(430, 450));
         setTitle("Numeric Elections");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,12 +44,12 @@ public class NumericElectionsFrame extends JFrame implements View {
         JButton addParty = new JButton("+");
         addParty.addActionListener(e -> mvc.controller.askForNewParty(this));
         south.add(addParty);
-        load = new JButton("load");
-        load.addActionListener(e -> {
-            load.setEnabled(false);
-            mvc.controller.loadVotes(this);
-        });
+        JButton load = new JButton("load");
+        load.addActionListener(e -> mvc.controller.loadVotes(this));
         south.add(load);
+        JButton loadAll = new JButton("load all");
+        loadAll.addActionListener(e -> mvc.controller.loadAll(this));
+        south.add(loadAll);
         save = new JButton("save");
         save.addActionListener(e -> {
             save.setEnabled(false);
@@ -85,6 +82,14 @@ public class NumericElectionsFrame extends JFrame implements View {
         }
 
         pack();
+    }
+
+    @Override
+    @UiThread
+    public void reportLoaded() {
+        EventQueue.invokeLater(() -> {
+            //load.setEnabled(true);
+        });
     }
 
     @Override
@@ -125,14 +130,6 @@ public class NumericElectionsFrame extends JFrame implements View {
             });
         };
         exec.schedule(cleanUp, 2, TimeUnit.SECONDS);
-    }
-
-    @Override
-    @UiThread
-    public void reportLoaded() {
-        EventQueue.invokeLater(() -> {
-            load.setEnabled(true);
-        });
     }
 
 
