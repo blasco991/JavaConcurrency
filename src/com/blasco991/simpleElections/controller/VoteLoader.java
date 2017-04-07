@@ -40,7 +40,7 @@ public class VoteLoader extends Thread {
             if (!this.parties.isEmpty())
                 uri += "?howmany=" + parties.size() * ThreadLocalRandom.current().nextInt(100) + "&parties=" + URLEncoder.encode(parties.stream().collect(Collectors.joining(",")), StandardCharsets.UTF_8.displayName());
 
-            URL url = new URL("http://dev.blasco991.com" + uri);
+            URL url = new URL("http://localhost:8080" + uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

@@ -50,9 +50,9 @@ public class Model {
     }
 
     @UiThread
-    public void addVotesTo(String party, int howMany) {
+    public void addVotesTo(String party) {
         if (votes.containsKey(party)) {
-            votes.put(party, votes.get(party) + howMany);
+            votes.put(party, votes.get(party) + 1);
             mvc.forEachView(View::onModelChanged);
         }
     }

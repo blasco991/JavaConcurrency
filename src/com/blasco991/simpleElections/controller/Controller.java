@@ -5,11 +5,8 @@ import com.blasco991.simpleElections.MVC;
 import com.blasco991.simpleElections.view.View;
 import net.jcip.annotations.ThreadSafe;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -43,29 +40,27 @@ public class Controller {
 
     @UiThread
     public void registerVoteFor(String party) {
-        mvc.model.addVotesTo(party, 1);
+        mvc.model.addVotesTo(party);
     }
 
     @UiThread
     public void saveVotes(View view) {
-        Map<String, Integer> votes = new HashMap<>();
-        for (String party : mvc.model.getParties())
-            votes.put(party, mvc.model.getVotesFor(party));
-
-        new VoteSaver(votes, view).start();
+        new VoteSaver(StreamSupport.stream(mvc.model.getParties().spliterator(), false)
+                .collect(Collectors.toMap(Function.identity(), mvc.model::getVotesFor)), view).start();
     }
 
     @UiThread
     public void loadVotes(View view) {
-        List<String> parties = StreamSupport.stream(mvc.model.getParties().spliterator(), false).collect(Collectors.toList());
-        Executors.newSingleThreadExecutor().execute(new VoteLoader(parties, mvc.model));
-        EventQueue.invokeLater(view::reportLoaded);
+        Executors.newSingleThreadExecutor().execute(
+                new VoteLoader(
+                        StreamSupport.stream(mvc.model.getParties().spliterator(), false)
+                                .collect(Collectors.toList()), mvc.model)
+        );
     }
 
     @UiThread
     public void loadAll(View view) {
         Executors.newSingleThreadExecutor().execute(new VoteLoader(mvc.model));
-        EventQueue.invokeLater(view::reportLoaded);
     }
 }
 
