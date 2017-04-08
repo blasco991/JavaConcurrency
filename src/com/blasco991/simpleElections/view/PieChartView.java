@@ -10,11 +10,14 @@ import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Tooltip;
 import net.jcip.annotations.ThreadSafe;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by blasco991 on 06/04/17.
@@ -71,7 +74,9 @@ public class PieChartView extends JFrame implements View {
     public void onModelChanged() {
         Platform.runLater(() -> {
             list.clear();
-            mvc.model.getParties().forEach(party -> list.add(new PieChart.Data(party, mvc.model.getVotesFor(party))));
+            list.addAll(StreamSupport.stream(mvc.model.getParties().spliterator(), false)
+                    .map(party -> new PieChart.Data(party, mvc.model.getVotesFor(party)))
+                    .collect(Collectors.toList()));
             pieChart.setData(list);
         });
         pack();
