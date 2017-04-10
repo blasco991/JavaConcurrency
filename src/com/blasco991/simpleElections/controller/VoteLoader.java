@@ -1,5 +1,7 @@
 package com.blasco991.simpleElections.controller;
 
+import com.blasco991.annotations.UiThread;
+import com.blasco991.annotations.WorkerThread;
 import com.blasco991.simpleElections.model.Model;
 
 import java.awt.*;
@@ -18,22 +20,21 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class VoteLoader extends Thread {
     private final List<String> parties;
     private final Model model;
 
-    public VoteLoader(List<String> parties, Model model) {
-        this.parties = parties;
-        this.model = model;
-    }
-
+    @UiThread
     public VoteLoader(Model model) {
-        this.parties = new ArrayList<>(0);
+        this.parties = StreamSupport.stream(model.getParties().spliterator(), false)
+                .collect(Collectors.toList());
         this.model = model;
     }
 
     @Override
+    @WorkerThread
     public void run() {
         try {
             String uri = "/SendVotes";

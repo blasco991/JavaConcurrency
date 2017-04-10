@@ -52,9 +52,7 @@ public class Controller {
     @UiThread
     public void loadVotes(View view) {
         Executors.newSingleThreadExecutor().execute(
-                new VoteLoader(
-                        StreamSupport.stream(mvc.model.getParties().spliterator(), false)
-                                .collect(Collectors.toList()), mvc.model)
+                new VoteLoader(mvc.model)
         );
     }
 
